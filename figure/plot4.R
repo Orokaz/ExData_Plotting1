@@ -1,0 +1,29 @@
+rm(list=ls())
+library(chron)
+library(dplyr)
+library(lubridate)
+setwd("./Exploratory Data Analysis")
+epc<-read.table("household_power_consumption.txt",sep = ";",header = TRUE, na.strings = "?")
+epc$Date<-as.Date(epc$Date,format = "%d/%m/%Y")
+epc$Time<-chron(times=epc$Time)
+feb_epc<-filter(epc,Date=="2007-02-01" | Date=="2007-02-02")
+feb_epc$datime<-as.POSIXlt(paste(feb_epc$Date,feb_epc$Time),format="%Y-%m-%d %H:%M:%OS")
+
+png("plot4.png")
+par(mfrow=c(2,2))
+
+with(feb_epc,plot(datime,Global_active_power,type="l",ylab = "Global Active Power",xlab=""))
+
+with(feb_epc,plot(datime,Voltage,type="l"))
+
+with(feb_epc,plot(datime,Sub_metering_1,type="l",ylab = "Energy sub metering",xlab="",
+                   col = "black"))
+with(feb_epc,lines(datime,Sub_metering_2,col="red"))
+with(feb_epc,lines(datime,Sub_metering_3,col="blue"))
+legend(x="topright",lty=1,legend=c("Sub_metering_1","Sub_metering_2","Sub_metering_3"),
+       col=c("black","red","blue"),cex=0.8)
+ 
+
+with(feb_epc,plot(datime,Global_reactive_power,type="l"))
+
+dev.off()

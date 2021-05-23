@@ -1,0 +1,13 @@
+rm(list=ls())
+library(chron)
+library(dplyr)
+library(lubridate)
+setwd("./Estudio/Exploratory Data Analysis")
+epc<-read.table("household_power_consumption.txt",sep = ";",header = TRUE, na.strings = "?")
+epc$Date<-as.Date(epc$Date,format = "%d/%m/%Y")
+epc$Time<-chron(times=epc$Time)
+feb_epc<-filter(epc,Date=="2007-02-01" | Date=="2007-02-02")
+
+png("plot1.png")
+with(feb_epc,hist(Global_active_power,xlab="Global Active Power (kilowatts)",main = "Global Active Power",col="red"))
+dev.off()
